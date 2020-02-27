@@ -4,6 +4,8 @@ A suite of Ghidra scripts to reason about binaries.
 ## Prerequisite
 To be able to import the current project successfully into Eclipse, you first need to install [Ghidra](https://ghidra-sre.org/) (> v9.1) and set up the Eclipse classpath variable `GHIDRA_HOME` to the root folder where you have installed Ghidra. Setting the classpath variable in Eclipse can be done through the `Preferences` panel: Java > Build Path > Classpath Variables.
 
+You also need to install the ``GhidraDev`` plugin into Eclipse which can be found in the `${GHIDRA_HOME}/Extensions/Eclipse` directory. For more information on installing and using the GhidraDev Eclipse plugin, see `${GHIDRA_HOME}/Extensions/Eclipse/GhidraDev/GhidraDev_README.html`.
+
 ## Ghidra Scripts
 Ghidra assumes that all custom scripts are defined within the default package. Therefore, for Ghidra to be able to detect your script, you need to place your script file in the default package.
 
