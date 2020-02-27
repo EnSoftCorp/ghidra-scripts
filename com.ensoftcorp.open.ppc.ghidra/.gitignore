@@ -1,0 +1,5 @@
+resources/tmp/
+bin/
+# Mac OS file
+.DS_Store
+Thumbs.db

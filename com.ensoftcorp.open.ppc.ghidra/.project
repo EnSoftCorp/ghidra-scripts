@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>com.ensoftcorp.open.ppc.ghidra</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>Ghidra</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME</locationURI>
+		</link>
+		<link>
+			<name>Ghidra 8051 scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Processors/8051/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra Base scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Features/Base/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra BytePatterns scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Features/BytePatterns/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra DATA scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Processors/DATA/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra Decompiler scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Features/Decompiler/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra FileFormats scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Features/FileFormats/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra FunctionID scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Features/FunctionID/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra GnuDemangler scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Features/GnuDemangler/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra PIC scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Processors/PIC/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra Python scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Features/Python/ghidra_scripts</locationURI>
+		</link>
+		<link>
+			<name>Ghidra VersionTracking scripts</name>
+			<type>2</type>
+			<locationURI>GHIDRA_HOME/Ghidra/Features/VersionTracking/ghidra_scripts</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>
