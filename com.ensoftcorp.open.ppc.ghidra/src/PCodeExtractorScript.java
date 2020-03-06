@@ -48,7 +48,6 @@ public class PCodeExtractorScript extends GhidraScript {
 			AddressSetView addressRange) throws Exception {
 
 		ArrayList<Element> instrTags = new ArrayList<Element>();
-		// ir.getAddress().getOffset() <= addressRange.getMaxAddress().getOffset()
 		while (ir != null && (addressRange.contains(ir.getAddress()))) {
 			String readRegisters = " ";
 			String writtenRegisters = " ";
@@ -132,6 +131,51 @@ public class PCodeExtractorScript extends GhidraScript {
 		return funcName.replaceAll("/", "_");
 	}
 
+	private String symTypeToStr(SymbolType symType) {
+		String symTypeStr = "";
+		if (symType.equals(SymbolType.CLASS)) {
+			symTypeStr = "class";
+		} else if (symType.equals(SymbolType.CODE)) {
+			symTypeStr = "code";
+		} else if (symType.equals(SymbolType.FUNCTION)) {
+			symTypeStr = "function";
+		} else if (symType.equals(SymbolType.GLOBAL)) {
+			symTypeStr = "global";
+		} else if (symType.equals(SymbolType.GLOBAL_VAR)) {
+			symTypeStr = "global_var";
+		} else if (symType.equals(SymbolType.LIBRARY)) {
+			symTypeStr = "library";
+		} else if (symType.equals(SymbolType.LOCAL_VAR)) {
+			symTypeStr = "local_var";
+		} else if (symType.equals(SymbolType.PARAMETER)) {
+			symTypeStr = "parameter";
+		} else if (symType.equals(SymbolType.NAMESPACE)) {
+			symTypeStr = "namespace";
+		} else {
+			symTypeStr = "unknown";
+		}
+		return symTypeStr;
+	}
+
+	private String symSrcToStr(SourceType symSrc) {
+		String symSrcStr = "";
+		switch (symSrc) {
+			case IMPORTED:
+				symSrcStr = "imported";
+				break;
+			case DEFAULT:
+				symSrcStr = "default";
+				break;
+			case USER_DEFINED:
+				symSrcStr = "user_defined";
+				break;
+			case ANALYSIS:
+				symSrcStr = "analysis";
+				break;
+		}
+		return symSrcStr;
+	}
+
 	@Override
 	public void run() throws Exception {
 		// Get script arguments
@@ -155,45 +199,8 @@ public class PCodeExtractorScript extends GhidraScript {
 		SymbolTable symTab = currentProgram.getSymbolTable();
 		SymbolIterator symIt = symTab.getAllSymbols(true);
 		for (Symbol sym : symIt) {
-			String symSrcStr = "";
-			SourceType symSrc = sym.getSource();
-			switch (symSrc) {
-			case IMPORTED:
-				symSrcStr = "imported";
-				break;
-			case DEFAULT:
-				symSrcStr = "default";
-				break;
-			case USER_DEFINED:
-				symSrcStr = "user_defined";
-				break;
-			case ANALYSIS:
-				symSrcStr = "analysis";
-				break;
-			}
-			SymbolType symType = sym.getSymbolType();
-			String symTypeStr = "";
-			if (symType.equals(SymbolType.CLASS)) {
-				symTypeStr = "class";
-			} else if (symType.equals(SymbolType.CODE)) {
-				symTypeStr = "code";
-			} else if (symType.equals(SymbolType.FUNCTION)) {
-				symTypeStr = "function";
-			} else if (symType.equals(SymbolType.GLOBAL)) {
-				symTypeStr = "global";
-			} else if (symType.equals(SymbolType.GLOBAL_VAR)) {
-				symTypeStr = "global_var";
-			} else if (symType.equals(SymbolType.LIBRARY)) {
-				symTypeStr = "library";
-			} else if (symType.equals(SymbolType.LOCAL_VAR)) {
-				symTypeStr = "local_var";
-			} else if (symType.equals(SymbolType.PARAMETER)) {
-				symTypeStr = "parameter";
-			} else if (symType.equals(SymbolType.NAMESPACE)) {
-				symTypeStr = "namespace";
-			} else {
-				symTypeStr = "unknown";
-			}
+			String symSrcStr = symSrcToStr(sym.getSource());
+			String symTypeStr = symTypeToStr(sym.getSymbolType());
 
 			if (symTypeStr.length() > 0 && !sym.getAddress().toString().contains("EXTERNAL")
 					&& !sym.getAddress().toString().contains(".") && !sym.getAddress().toString().contains(":")) {
@@ -213,8 +220,6 @@ public class PCodeExtractorScript extends GhidraScript {
 				binaryTag.appendChild(symTag);
 			}
 		}
-
-		ArrayList<Long> processedFuncs = new ArrayList<Long>();
 
 		while (funcIter.hasNext() && !monitor.isCancelled()) {
 			Function func = funcIter.next();
@@ -261,12 +266,6 @@ public class PCodeExtractorScript extends GhidraScript {
 			for (Function f : calledFromFuncs) {
 				callingFuncsStr += fixFunctionName(f.getName()) + ",";
 			}
-			/*
-			 * String addressesRange = ""; AddressIterator addrIt =
-			 * addressRange.getAddresses(true); while (addrIt.hasNext()) { Address a =
-			 * addrIt.next(); addressesRange += "0x" + Long.toHexString(a.getOffset()) +
-			 * ","; } println(func.getName() + " range: " + addressesRange);
-			 */
 
 			Element funcTag = doc.createElement("Function");
 			binaryTag.appendChild(funcTag);
@@ -288,6 +287,7 @@ public class PCodeExtractorScript extends GhidraScript {
 			Attr endA = doc.createAttribute("end");
 			endA.setValue(genAddr(addressRange.getMaxAddress()));
 			funcTag.setAttributeNode(endA);
+
 			String thunk = "not-thunk";
 			String thunkFuncRef = "";
 			Function thunkFuncRefFunc = null;
@@ -311,10 +311,7 @@ public class PCodeExtractorScript extends GhidraScript {
 			ArrayList<Element> instTags = generateInstTag(ir, doc, trans, addressRange);
 			for (Element tag : instTags) {
 				funcTag.appendChild(tag);
-			} /*
-				 * for (PcodeBlockBasic bb : bbs) { println(bb.getStart().toString());
-				 * println(bb.getStop().toString()); }
-				 */
+			}
 
 			for (PcodeBlockBasic bb : bbs) {
 				int inEdges = bb.getInSize();
@@ -356,6 +353,10 @@ public class PCodeExtractorScript extends GhidraScript {
 			}
 		}
 
+		exportXML(doc, tmpFilePrefix);
+	}
+
+	private void exportXML(Document doc, String tmpFilePrefix) {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
